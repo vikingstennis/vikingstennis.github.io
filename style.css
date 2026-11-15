@@ -324,6 +324,6 @@ header.is-compact{padding-inline:max(3.5%,env(safe-area-inset-left)) max(3.5%,en
 #back-to-top{right:calc(16px + env(safe-area-inset-right));background:#092a20;color:#f5f3eb;transition:transform 180ms ease-out,visibility 0s;opacity:0}
 #back-to-top.is-visible{opacity:1;background:#092a20;color:#f5f3eb}
 /* Preserve 44px touch targets in existing navigation. */
-header .brand,header nav a,header .menu,.hero-actions .text-link,.roster-intro .tabs button,#schedule-tabs button,.coach-line>a{min-height:44px;display:inline-flex;align-items:center}
-header .menu{min-width:44px;justify-content:center}
+header .brand,header nav a,.hero-actions .text-link,.roster-intro .tabs button,#schedule-tabs button,.coach-line>a{min-height:44px;display:inline-flex;align-items:center}
+header .menu{min-width:44px;min-height:44px;justify-content:center}
 .footer-brand{min-height:44px;display:inline-flex;align-items:center}
