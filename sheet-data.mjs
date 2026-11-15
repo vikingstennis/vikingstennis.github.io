@@ -94,14 +94,20 @@ export function buildSheetMatches(csv){
  }));
 }
 export function configuredURLs(urls){
- const values=['fixtures','results','lines'].map(k=>urls?.[k]);
- return values.every(x=>typeof x==='string'&&/^https:\/\//i.test(x)&&(()=>{try{return new URL(x).protocol==='https:'}catch{return false}})());
+ if(typeof urls?.fixtures!=='string'||!urls.fixtures.trim())return false;
+ return ['fixtures','results','lines'].every(kind=>{
+  const value=urls[kind];
+  if(typeof value!=='string')return false;
+  if(kind!=='fixtures'&&!value.trim())return true;
+  try{return new URL(value).protocol==='https:';}catch{return false;}
+ });
 }
 export async function loadSheetMatches(urls,fetcher=fetch){
  if(!configuredURLs(urls))return null;
  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),3000);
  try{
   const entries=await Promise.all(['fixtures','results','lines'].map(async kind=>{
+   if(!urls[kind].trim())return [kind,headers[kind].join(',')+'\n'];
    const response=await fetcher(urls[kind],{mode:'cors',signal:controller.signal,cache:'no-store'});
    if(!response.ok)throw new Error('CSV request failed');
    const text=await response.text();if(text.length>maxBytes)throw new Error('CSV too large');
