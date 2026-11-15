@@ -309,7 +309,21 @@ footer>p{margin-bottom:32px}
 @media(max-width:700px){.footer-bottom{align-items:center;text-align:center}.footer-bottom span:last-child{text-align:center}}
 h1,h2,h3,h4,.next-opponent{text-wrap:balance}
 .match-date-chip,.match-date,.next-details,.match-final-state,.score-number,.match-scoreboard,.match-result-line span:nth-child(2),.result-counts{font-variant-numeric:tabular-nums}
+.team-final-states{display:flex;flex-wrap:wrap;gap:var(--space-2)}
+.team-final-chip{display:inline-flex;align-items:center;gap:var(--space-1);min-height:36px;padding:4px 8px 4px 12px;border-radius:999px;background:#e7eddf;color:var(--dark);font:600 14px var(--body);white-space:nowrap;font-variant-numeric:tabular-nums}
+.team-final-chip .result-chip{min-width:28px;height:28px}
+.result-team-switch{display:inline-flex;gap:4px;padding:4px;border-radius:999px;background:#e7eddf;margin:0 0 var(--space-4)}
+.result-team-switch button{min-width:88px;min-height:44px;padding:8px 16px;border:0;border-radius:999px;background:transparent;color:var(--dark);font:600 14px var(--body);cursor:pointer}
+.result-team-switch button[aria-pressed="true"]{background:var(--green);color:var(--cream);box-shadow:0 4px 12px #092a2029}
+.result-team-switch button:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.result-team-switch button:active{transform:scale(.97)}
+.team-result-panel[hidden]{display:none}
+@media(max-width:700px){.team-final-states{gap:4px}.team-final-chip{padding-inline:8px;font-size:14px}.shared-results .match-final-layout{grid-template-columns:minmax(0,1fr)}}
 header{padding-inline:max(4.5%,env(safe-area-inset-left)) max(4.5%,env(safe-area-inset-right))}
 header.is-compact{padding-inline:max(3.5%,env(safe-area-inset-left)) max(3.5%,env(safe-area-inset-right))}
 #back-to-top{right:calc(16px + env(safe-area-inset-right));background:#092a20;color:#f5f3eb;transition:transform 180ms ease-out,visibility 0s;opacity:0}
 #back-to-top.is-visible{opacity:1;background:#092a20;color:#f5f3eb}
+/* Preserve 44px touch targets in existing navigation. */
+header .brand,header nav a,header .menu,.hero-actions .text-link,.roster-intro .tabs button,#schedule-tabs button,.coach-line>a{min-height:44px;display:inline-flex;align-items:center}
+header .menu{min-width:44px;justify-content:center}
+.footer-brand{min-height:44px;display:inline-flex;align-items:center}

@@ -4,6 +4,8 @@ import { players } from './players.mjs';
 import { nextMatch, sharedMatchLabel, matchDetails, tickerMarkup, escapeHTML as e } from './model.mjs';
 import {nextMarkup,rowMarkup} from './match-markup.mjs';
 import {initScrollEffects} from './scroll-effects.mjs';
+import {SHEET_CSV_URLS} from './sheet-config.mjs';
+import {loadSheetMatches} from './sheet-data.mjs';
 const KEY='northwest-tennis-2027-v2';
 const PUBLIC=true;
 const defaults={matches:seasonMatches};
@@ -36,6 +38,7 @@ function observe(){if(!observer)return;document.querySelectorAll('.reveal:not(.v
 if('IntersectionObserver'in window&&!matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.classList.add('js-motion');observer=new IntersectionObserver(entries=>entries.forEach(x=>{if(x.isIntersecting){x.target.classList.add('visible');observer.unobserve(x.target)}}),{threshold:.08});}
 document.querySelectorAll('[data-roster-team]').forEach(b=>b.addEventListener('click',()=>{rosterTeam=b.dataset.rosterTeam;render()}));
 document.querySelectorAll('[data-schedule-team]').forEach(b=>b.addEventListener('click',()=>{scheduleTeam=b.dataset.scheduleTeam;render()}));
+document.addEventListener('click',event=>{const button=event.target instanceof Element?event.target.closest('[data-result-team]'):null;if(!button)return;const group=button.closest('.shared-results');if(!group)return;for(const tab of group.querySelectorAll('[data-result-team]'))tab.setAttribute('aria-pressed',String(tab===button));for(const panel of group.querySelectorAll('[data-result-panel]'))panel.hidden=panel.dataset.resultPanel!==button.dataset.resultTeam;});
 document.querySelector('#copy-calendar-url').addEventListener('click',async event=>{try{await navigator.clipboard.writeText(SEASON_FEED);event.currentTarget.textContent='Feed URL copied';}catch{event.currentTarget.textContent=SEASON_FEED;}});
 const menu=document.querySelector('#menu'),nav=document.querySelector('#nav');menu.addEventListener('click',()=>{const open=menu.getAttribute('aria-expanded')!=='true';menu.setAttribute('aria-expanded',open);nav.classList.toggle('open',open)});nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');menu.setAttribute('aria-expanded','false')}));
 document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',event=>{if(event.target===d){const r=d.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)d.close();}}));
@@ -46,3 +49,4 @@ document.addEventListener('toggle',event=>{const card=event.target;if(!(card ins
 
 render();
 initScrollEffects();
+loadSheetMatches(SHEET_CSV_URLS).then(matches=>{if(!matches)return;const list=document.querySelector('#match-list');list.style.minHeight=`${list.getBoundingClientRect().height}px`;data.matches=matches;render();requestAnimationFrame(()=>{list.style.minHeight='';});});
