@@ -4,6 +4,7 @@ import { players } from './players.mjs';
 import { nextMatch, sharedMatchLabel, matchDetails, tickerMarkup, escapeHTML as e } from './model.mjs';
 import {nextMarkup,rowMarkup} from './match-markup.mjs';
 import {initScrollEffects} from './scroll-effects.mjs';
+import {initDetailsMotion} from './details-motion.mjs';
 import {SHEET_CSV_URLS} from './sheet-config.mjs';
 import {loadSheetMatches} from './sheet-data.mjs';
 const KEY='northwest-tennis-2027-v2';
@@ -39,14 +40,13 @@ if('IntersectionObserver'in window&&!matchMedia('(prefers-reduced-motion: reduce
 document.querySelectorAll('[data-roster-team]').forEach(b=>b.addEventListener('click',()=>{rosterTeam=b.dataset.rosterTeam;render()}));
 document.querySelectorAll('[data-schedule-team]').forEach(b=>b.addEventListener('click',()=>{scheduleTeam=b.dataset.scheduleTeam;render()}));
 document.addEventListener('click',event=>{const button=event.target instanceof Element?event.target.closest('[data-result-team]'):null;if(!button)return;const group=button.closest('.shared-results');if(!group)return;for(const tab of group.querySelectorAll('[data-result-team]'))tab.setAttribute('aria-pressed',String(tab===button));for(const panel of group.querySelectorAll('[data-result-panel]'))panel.hidden=panel.dataset.resultPanel!==button.dataset.resultTeam;});
-document.querySelector('#copy-calendar-url').addEventListener('click',async event=>{try{await navigator.clipboard.writeText(SEASON_FEED);event.currentTarget.textContent='Feed URL copied';}catch{event.currentTarget.textContent=SEASON_FEED;}});
+document.querySelector('#copy-calendar-url').addEventListener('click',async event=>{try{await navigator.clipboard.writeText(SEASON_FEED);event.currentTarget.textContent='Link copied';}catch{event.currentTarget.textContent=SEASON_FEED;}});
 const menu=document.querySelector('#menu'),nav=document.querySelector('#nav');menu.addEventListener('click',()=>{const open=menu.getAttribute('aria-expanded')!=='true';menu.setAttribute('aria-expanded',open);nav.classList.toggle('open',open)});nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');menu.setAttribute('aria-expanded','false')}));
 document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',event=>{if(event.target===d){const r=d.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)d.close();}}));
 const ticker=document.querySelector('.ticker');document.querySelector('#ticker-pause').addEventListener('click',event=>{const paused=ticker.classList.toggle('is-paused');event.currentTarget.setAttribute('aria-pressed',paused);event.currentTarget.textContent=paused?'Play':'Pause';event.currentTarget.setAttribute('aria-label',paused?'Play moving banner':'Pause moving banner');});
-document.addEventListener('keydown',event=>{if(event.key!=='Escape')return;const open=document.querySelector('.calendar-disclosure[open]');if(!open)return;open.open=false;open.querySelector('summary').focus();event.stopPropagation();});
-document.addEventListener('click',event=>{for(const open of document.querySelectorAll('.calendar-disclosure[open]'))if(!open.contains(event.target)){open.open=false;open.querySelector('summary').focus();}});
 document.addEventListener('toggle',event=>{const card=event.target;if(!(card instanceof HTMLDetailsElement)||!card.classList.contains('match-card')||!card.open||matchMedia('(prefers-reduced-motion: reduce)').matches)return;for(const score of card.querySelectorAll('.score-number[data-score]')){const end=Number(score.dataset.score);if(!Number.isInteger(end))continue;score.textContent='0';const start=performance.now();function tick(now){if(!card.open)return;const fraction=Math.min(1,(now-start)/500);score.textContent=String(Math.round(end*(1-Math.pow(1-fraction,3))));if(fraction<1)requestAnimationFrame(tick)}requestAnimationFrame(tick)}},true);
 
 render();
 initScrollEffects();
+initDetailsMotion();
 loadSheetMatches(SHEET_CSV_URLS).then(matches=>{if(!matches)return;const list=document.querySelector('#match-list');list.style.minHeight=`${list.getBoundingClientRect().height}px`;data.matches=matches;render();requestAnimationFrame(()=>{list.style.minHeight='';});});
