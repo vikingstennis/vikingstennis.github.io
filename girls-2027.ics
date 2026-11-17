@@ -21,8 +21,62 @@ TZNAME:CST
 END:STANDARD
 END:VTIMEZONE
 BEGIN:VEVENT
+UID:girls-2027-03-01-rossview@vikingstennis.github.io
+DTSTAMP:20261117T182311Z
+LAST-MODIFIED:20261117T182016Z
+SEQUENCE:0
+DTSTART;TZID=America/Chicago:20270301T160000
+DTEND;TZID=America/Chicago:20270301T180000
+SUMMARY:Northwest Tennis at Rossview (tentative)
+LOCATION:Rossview High School\, 1237 Rossview Road\, Clarksville\, TN 37043
+DESCRIPTION:Time and location tentative until confirmed. Latest schedule: h
+ ttps://vikingstennis.github.io/#schedule
+STATUS:TENTATIVE
+END:VEVENT
+BEGIN:VEVENT
+UID:girls-2027-03-02-northeast@vikingstennis.github.io
+DTSTAMP:20261117T182311Z
+LAST-MODIFIED:20261117T182016Z
+SEQUENCE:0
+DTSTART;TZID=America/Chicago:20270302T160000
+DTEND;TZID=America/Chicago:20270302T180000
+SUMMARY:Northwest Tennis vs. Northeast (tentative)
+LOCATION:Northwest High School tennis courts\, 800 Lafayette Road\, Clarksv
+ ille\, TN 37042
+DESCRIPTION:Time and location tentative until confirmed. Latest schedule: h
+ ttps://vikingstennis.github.io/#schedule
+STATUS:TENTATIVE
+END:VEVENT
+BEGIN:VEVENT
+UID:girls-2027-03-04-northeast@vikingstennis.github.io
+DTSTAMP:20261117T182311Z
+LAST-MODIFIED:20261117T182016Z
+SEQUENCE:0
+DTSTART;TZID=America/Chicago:20270304T160000
+DTEND;TZID=America/Chicago:20270304T180000
+SUMMARY:Northwest Tennis at Northeast (tentative)
+LOCATION:Northeast High School\, 3701 Trenton Road\, Clarksville\, TN 37040
+DESCRIPTION:Time and location tentative until confirmed. Latest schedule: h
+ ttps://vikingstennis.github.io/#schedule
+STATUS:TENTATIVE
+END:VEVENT
+BEGIN:VEVENT
+UID:girls-2027-03-08-rossview@vikingstennis.github.io
+DTSTAMP:20261117T182311Z
+LAST-MODIFIED:20261117T182016Z
+SEQUENCE:0
+DTSTART;TZID=America/Chicago:20270308T160000
+DTEND;TZID=America/Chicago:20270308T180000
+SUMMARY:Northwest Tennis vs. Rossview (tentative)
+LOCATION:Northwest High School tennis courts\, 800 Lafayette Road\, Clarksv
+ ille\, TN 37042
+DESCRIPTION:Time and location tentative until confirmed. Latest schedule: h
+ ttps://vikingstennis.github.io/#schedule
+STATUS:TENTATIVE
+END:VEVENT
+BEGIN:VEVENT
 UID:girls-2027-03-09-henry-county@vikingstennis.github.io
-DTSTAMP:20261116T010925Z
+DTSTAMP:20261117T182311Z
 LAST-MODIFIED:20261114T025443Z
 SEQUENCE:0
 DTSTART;TZID=America/Chicago:20270309T160000
@@ -35,8 +89,22 @@ DESCRIPTION:Time and location tentative until confirmed. Latest schedule: h
 STATUS:TENTATIVE
 END:VEVENT
 BEGIN:VEVENT
+UID:girls-2027-03-11-christian-county@vikingstennis.github.io
+DTSTAMP:20261117T182311Z
+LAST-MODIFIED:20261117T182016Z
+SEQUENCE:0
+DTSTART;TZID=America/Chicago:20270311T160000
+DTEND;TZID=America/Chicago:20270311T180000
+SUMMARY:Northwest Tennis at Christian County (tentative)
+LOCATION:Christian County High School\, 1 Tiger Way\, Hopkinsville\, KY 422
+ 40
+DESCRIPTION:Time and location tentative until confirmed. Latest schedule: h
+ ttps://vikingstennis.github.io/#schedule
+STATUS:TENTATIVE
+END:VEVENT
+BEGIN:VEVENT
 UID:girls-2027-03-23-west-creek@vikingstennis.github.io
-DTSTAMP:20261116T010925Z
+DTSTAMP:20261117T182311Z
 LAST-MODIFIED:20261114T025443Z
 SEQUENCE:0
 DTSTART;TZID=America/Chicago:20270323T160000
@@ -50,7 +118,7 @@ STATUS:TENTATIVE
 END:VEVENT
 BEGIN:VEVENT
 UID:girls-2027-03-25-kenwood@vikingstennis.github.io
-DTSTAMP:20261116T010925Z
+DTSTAMP:20261117T182311Z
 LAST-MODIFIED:20261114T025443Z
 SEQUENCE:0
 DTSTART;TZID=America/Chicago:20270325T160000
@@ -64,7 +132,7 @@ STATUS:TENTATIVE
 END:VEVENT
 BEGIN:VEVENT
 UID:girls-2027-03-30-west-creek@vikingstennis.github.io
-DTSTAMP:20261116T010925Z
+DTSTAMP:20261117T182311Z
 LAST-MODIFIED:20261114T025443Z
 SEQUENCE:0
 DTSTART;TZID=America/Chicago:20270330T160000
@@ -78,7 +146,7 @@ STATUS:TENTATIVE
 END:VEVENT
 BEGIN:VEVENT
 UID:girls-2027-04-01-kenwood@vikingstennis.github.io
-DTSTAMP:20261116T010925Z
+DTSTAMP:20261117T182311Z
 LAST-MODIFIED:20261114T025443Z
 SEQUENCE:0
 DTSTART;TZID=America/Chicago:20270401T160000
@@ -91,8 +159,22 @@ DESCRIPTION:Time and location tentative until confirmed. Latest schedule: h
 STATUS:TENTATIVE
 END:VEVENT
 BEGIN:VEVENT
+UID:girls-2027-04-05-clarksville-academy@vikingstennis.github.io
+DTSTAMP:20261117T182311Z
+LAST-MODIFIED:20261117T182016Z
+SEQUENCE:0
+DTSTART;TZID=America/Chicago:20270405T160000
+DTEND;TZID=America/Chicago:20270405T180000
+SUMMARY:Northwest Tennis vs. Clarksville Academy (tentative)
+LOCATION:Northwest High School tennis courts\, 800 Lafayette Road\, Clarksv
+ ille\, TN 37042
+DESCRIPTION:Time and location tentative until confirmed. Latest schedule: h
+ ttps://vikingstennis.github.io/#schedule
+STATUS:TENTATIVE
+END:VEVENT
+BEGIN:VEVENT
 UID:girls-2027-04-06-dickson-county@vikingstennis.github.io
-DTSTAMP:20261116T010925Z
+DTSTAMP:20261117T182311Z
 LAST-MODIFIED:20261114T025443Z
 SEQUENCE:0
 DTSTART;TZID=America/Chicago:20270406T160000
@@ -106,7 +188,7 @@ STATUS:TENTATIVE
 END:VEVENT
 BEGIN:VEVENT
 UID:girls-2027-04-08-dickson-county@vikingstennis.github.io
-DTSTAMP:20261116T010925Z
+DTSTAMP:20261117T182311Z
 LAST-MODIFIED:20261114T025443Z
 SEQUENCE:0
 DTSTART;TZID=America/Chicago:20270408T160000
@@ -120,12 +202,26 @@ STATUS:TENTATIVE
 END:VEVENT
 BEGIN:VEVENT
 UID:girls-2027-04-13-henry-county@vikingstennis.github.io
-DTSTAMP:20261116T010925Z
+DTSTAMP:20261117T182311Z
 LAST-MODIFIED:20261114T025443Z
 SEQUENCE:0
 DTSTART;TZID=America/Chicago:20270413T160000
 DTEND;TZID=America/Chicago:20270413T180000
 SUMMARY:Northwest Tennis vs. Henry County (tentative)
+LOCATION:Northwest High School tennis courts\, 800 Lafayette Road\, Clarksv
+ ille\, TN 37042
+DESCRIPTION:Time and location tentative until confirmed. Latest schedule: h
+ ttps://vikingstennis.github.io/#schedule
+STATUS:TENTATIVE
+END:VEVENT
+BEGIN:VEVENT
+UID:girls-2027-04-16-christian-county@vikingstennis.github.io
+DTSTAMP:20261117T182311Z
+LAST-MODIFIED:20261117T182016Z
+SEQUENCE:0
+DTSTART;TZID=America/Chicago:20270416T160000
+DTEND;TZID=America/Chicago:20270416T180000
+SUMMARY:Northwest Tennis vs. Christian County (tentative)
 LOCATION:Northwest High School tennis courts\, 800 Lafayette Road\, Clarksv
  ille\, TN 37042
 DESCRIPTION:Time and location tentative until confirmed. Latest schedule: h

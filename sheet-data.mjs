@@ -14,7 +14,7 @@ const small=(s,n)=>safe(s)&&s.length<=n;
 const score=s=>/^\d{1,2}$/.test(s)&&Number(s)<=20;
 const key=s=>/^20\d{2}-\d{2}-\d{2}-[a-z0-9]+(?:-[a-z0-9]+)*$/.test(s)&&s.length<=80;
 const slug=s=>s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
-const districtIds=new Set(seasonMatches.map(match=>`${match.date}-${slug(match.opponent)}`));
+const districtIds=new Set(seasonMatches.filter(match=>match.matchType==='district').map(match=>`${match.date}-${slug(match.opponent)}`));
 
 export function parseCSV(text){
  if(typeof text!=='string'||text.length>maxBytes||!text.trim())throw new Error('CSV unavailable');
