@@ -1,4 +1,4 @@
-import { seasonMatches, schedulesIdentical, allMatchesConfirmed } from './schedule.mjs';
+import { seasonMatches, schedulesIdentical } from './schedule.mjs';
 import { calendarPlatform, SEASON_FEED } from './calendar.mjs';
 import { players } from './players.mjs';
 import { nextMatch, sharedMatchLabel, matchDetails, tickerMarkup, escapeHTML as e } from './model.mjs';
@@ -18,7 +18,7 @@ function render(){
  const shared=schedulesIdentical(data.matches);
  document.querySelector('#schedule-tabs').hidden=shared;
  document.querySelector('#schedule-shared-label').hidden=!shared;
- document.querySelector('#schedule-tentative-note').hidden=allMatchesConfirmed(data.matches);
+
  document.querySelectorAll('[data-schedule-team]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.scheduleTeam===scheduleTeam));
  document.querySelectorAll('[data-roster-team]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.rosterTeam===rosterTeam));
  const next=nextMatch(data.matches,shared?'boys':scheduleTeam);
