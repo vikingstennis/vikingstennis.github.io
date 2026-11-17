@@ -6,7 +6,9 @@ import {nextMarkup,rowMarkup} from './match-markup.mjs';
 import {initScrollEffects} from './scroll-effects.mjs';
 import {initDetailsMotion} from './details-motion.mjs';
 import {SHEET_CSV_URLS} from './sheet-config.mjs';
-import {loadSheetMatches} from './sheet-data.mjs';
+import {configuredURLs,loadSheetMatches} from './sheet-data.mjs';
+import {createSheetRefresh} from './sheet-refresh.mjs';
+import {SHOW_SCORES} from './approval-runtime.mjs';
 const KEY='northwest-tennis-2027-v2';
 const PUBLIC=true;
 const defaults={matches:seasonMatches};
@@ -14,7 +16,7 @@ let data=structuredClone(defaults),rosterTeam='boys',scheduleTeam='boys';
 
 const fmt=(date,options)=>new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',...options}).format(new Date(/^\d{4}-\d{2}-\d{2}$/.test(date)?date+'T12:00:00Z':date));
 
-function render(){
+function render({updateRoster=true}={}){
  const shared=schedulesIdentical(data.matches);
  document.querySelector('#schedule-tabs').hidden=shared;
  document.querySelector('#schedule-shared-label').hidden=!shared;
@@ -27,10 +29,10 @@ function render(){
  document.querySelector('#match-list').innerHTML=rows.map(rowMarkup).join('');
  document.querySelector('.ticker-track').innerHTML=tickerMarkup(data.matches);
  document.querySelector('#team-name').textContent=rosterTeam==='boys'?'Vikings':'Lady Vikings';
- document.querySelector('#player-list').innerHTML=players.filter(p=>p.team===rosterTeam).map(p=>`<article class="player-card reveal"><div class="player-photo"><span class="player-placeholder" aria-hidden="true">${p.initials}</span><picture><source srcset="${e(p.image.replace(/\.jpg$/,'.webp'))}" type="image/webp"><img class="athlete-image" src="${e(p.image)}" width="${p.width??1200}" height="${p.height??(p.name==='Colby Carnagey'?1800:800)}" loading="lazy" alt="${e(p.name)} playing tennis" style="object-position:${e(p.focus)}"></picture><span class="pill">${p.captain?'TEAM CAPTAIN':'VARSITY'}</span></div><div class="player-info"><div><h3>${e(p.name.toUpperCase())}</h3><p>${rosterTeam==='boys'?'BOYS TENNIS':'GIRLS TENNIS'}</p></div></div></article>`).join('');
+ if(updateRoster)document.querySelector('#player-list').innerHTML=players.filter(p=>p.team===rosterTeam).map(p=>`<article class="player-card reveal"><div class="player-photo"><span class="player-placeholder" aria-hidden="true">${p.initials}</span>${p.image?`<picture><source srcset="${e(p.image.replace(/\.jpg$/,'.webp'))}" type="image/webp"><img class="athlete-image" src="${e(p.image)}" width="${p.width??1200}" height="${p.height??800}" loading="lazy" alt="${e(p.name)} playing tennis" style="object-position:${e(p.focus)}"></picture>`:''}<span class="pill">${p.captain?'TEAM CAPTAIN':'VARSITY'}</span></div><div class="player-info"><div><h3>${e(p.name.toUpperCase())}</h3><p>${rosterTeam==='boys'?'BOYS TENNIS':'GIRLS TENNIS'}</p></div></div></article>`).join('');
  const appleOnly=calendarPlatform(navigator.userAgent,navigator.userAgentData?.platform??navigator.platform??'')==='google';
  document.querySelectorAll('[data-calendar-apple]').forEach(link=>link.hidden=appleOnly);
- document.querySelectorAll('.athlete-image').forEach(img=>img.addEventListener('error',()=>{img.hidden=true;},{once:true}));
+ if(updateRoster)document.querySelectorAll('.athlete-image').forEach(img=>img.addEventListener('error',()=>{img.hidden=true;},{once:true}));
  observe();
  window.dispatchEvent(new Event('northwest:layout'));
 }
@@ -49,4 +51,31 @@ document.addEventListener('toggle',event=>{const card=event.target;if(!(card ins
 render();
 initScrollEffects();
 initDetailsMotion();
-loadSheetMatches(SHEET_CSV_URLS).then(matches=>{if(!matches)return;const list=document.querySelector('#match-list');list.style.minHeight=`${list.getBoundingClientRect().height}px`;data.matches=matches;render();requestAnimationFrame(()=>{list.style.minHeight='';});});
+function applySheetMatches(matches){
+ if(!SHOW_SCORES)matches=matches.map(match=>{const {teamResults,result,...fixture}=match;return fixture.status==='final'?{...fixture,status:'scheduled'}:fixture;});
+ const list=document.querySelector('#match-list');
+ const opened=new Set([...list.querySelectorAll('.match-card[open]')].map(card=>card.dataset.matchKey));
+ const selected=new Map([...list.querySelectorAll('.match-card')].map(card=>[
+  card.dataset.matchKey,card.querySelector('[data-result-team][aria-pressed="true"]')?.dataset.resultTeam
+ ]));
+ const focused=document.activeElement?.closest('#match-list .match-card')?.dataset.matchKey;
+ list.style.minHeight=`${list.getBoundingClientRect().height}px`;
+ data.matches=matches;
+ render({updateRoster:false});
+ for(const card of list.querySelectorAll('.match-card')){
+  if(opened.has(card.dataset.matchKey))card.open=true;
+  const team=selected.get(card.dataset.matchKey);
+  if(team)card.querySelector(`[data-result-team="${team}"]`)?.click();
+  if(card.dataset.matchKey===focused)card.querySelector('summary')?.focus({preventScroll:true});
+ }
+ requestAnimationFrame(()=>{list.style.minHeight='';});
+}
+if(configuredURLs(SHEET_CSV_URLS)){
+ const refresh=createSheetRefresh(data.matches,()=>loadSheetMatches(SHEET_CSV_URLS),applySheetMatches);
+ const check=()=>{if(!document.hidden)void refresh.check();};
+ check();
+ setInterval(check,60_000);
+ document.addEventListener('visibilitychange',check);
+ window.addEventListener('focus',check);
+ window.addEventListener('online',check);
+}
