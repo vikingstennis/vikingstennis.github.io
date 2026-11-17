@@ -1,7 +1,7 @@
 import { seasonMatches, schedulesIdentical } from './schedule.mjs';
 import { calendarPlatform, SEASON_FEED } from './calendar.mjs';
 import { players } from './players.mjs';
-import { nextMatch, sharedMatchLabel, matchDetails, tickerMarkup, escapeHTML as e } from './model.mjs';
+import { nextMatch, sharedMatchLabel, matchDetails, tickerMarkup, escapeHTML as e, scheduleOrder } from './model.mjs';
 import {nextMarkup,rowMarkup} from './match-markup.mjs';
 import {initScrollEffects} from './scroll-effects.mjs';
 import {initDetailsMotion} from './details-motion.mjs';
@@ -25,7 +25,7 @@ function render({updateRoster=true}={}){
  document.querySelectorAll('[data-roster-team]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.rosterTeam===rosterTeam));
  const next=nextMatch(data.matches,shared?'boys':scheduleTeam);
  document.querySelector('#next-match').innerHTML=nextMarkup(next,data.matches);
- const rows=data.matches.filter(m=>m.team===(shared?'boys':scheduleTeam)).sort((a,b)=>(a.status==='final')-(b.status==='final')||new Date(a.date)-new Date(b.date));
+ const rows=scheduleOrder(data.matches.filter(m=>m.team===(shared?'boys':scheduleTeam)));
  document.querySelector('#match-list').innerHTML=rows.map(rowMarkup).join('');
  document.querySelector('.ticker-track').innerHTML=tickerMarkup(data.matches);
  document.querySelector('#team-name').textContent=rosterTeam==='boys'?'Vikings':'Lady Vikings';

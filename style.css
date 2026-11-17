@@ -177,6 +177,7 @@ footer{gap:var(--space-6)}
 .match-verification{display:inline-flex;align-items:center;gap:var(--space-1);padding:var(--space-1) var(--space-3);border-radius:999px;font:600 14px var(--body);line-height:1.25}
 .match-verification svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .match-verification.is-tentative{background:var(--gold);color:var(--dark)}
+.match-verification.is-district{background:var(--gold);color:var(--dark)}
 .match-verification.is-confirmed{background:#dcebdd;color:var(--dark)}
 .next-info>.match-verification{margin-top:var(--space-2)}
 .match-card-meta .match-verification{padding:var(--space-1) var(--space-2)}
