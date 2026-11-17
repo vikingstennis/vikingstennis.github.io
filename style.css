@@ -223,6 +223,7 @@ footer{gap:var(--space-6)}
 .footer-links .footer-mark-row{display:flex;flex-wrap:nowrap;align-items:center;justify-content:center;gap:24px;width:100%}
 .footer-links .footer-mark-row a:nth-child(2){width:88px;min-width:88px;flex-basis:88px}
 .footer-links .footer-mark-row a:nth-child(2) img{width:80px;height:42px}
+.footer-links .footer-mark-row .tssaa-text{display:inline-flex;align-items:center;justify-content:center;min-height:44px;color:var(--dark);font:700 22px var(--heading);letter-spacing:.04em}
 .footer-links .footer-mark-row a:hover>img,.footer-links .footer-mark-row a:focus-visible>img,.footer-links .footer-mark-row a:hover .footer-instagram-crop,.footer-links .footer-mark-row a:focus-visible .footer-instagram-crop{transform:scale(1.06)}
 .footer-links .footer-mark-row a img,.footer-links .footer-instagram-crop{transition:transform 180ms var(--ease-ui)}
 @media(hover:hover) and (pointer:fine){.footer-links a:hover{transform:none;box-shadow:none}}
