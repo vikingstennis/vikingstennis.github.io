@@ -1,5 +1,6 @@
 import {seasonMatches,validateFixture} from './schedule.mjs';
 import {validateMatchResult} from './match-result.mjs';
+import {startUTC} from './calendar.mjs';
 
 const headers={
  fixtures:['match_id','date','start_time','time_status','opponent','home_away','venue_name','address','location_status','status','new_date','reason','last_updated'],
@@ -9,7 +10,7 @@ const headers={
 const maxBytes=512000,maxRows=300,maxCell=3000;
 const dateOK=s=>{if(!/^\d{4}-\d{2}-\d{2}$/.test(s))return false;const d=new Date(s+'T12:00:00Z');return Number.isFinite(d.getTime())&&d.toISOString().slice(0,10)===s;};
 const stampOK=s=>!s||(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.test(s)&&Number.isFinite(Date.parse(s)));
-const safe=s=>typeof s==='string'&&s.length<=maxCell&&!/^(?:[=+\-@]|javascript:|data:)/i.test(s.trim());
+const safe=s=>typeof s==='string'&&s.length<=maxCell&&!/[\u200B-\u200F\u202A-\u202E\u2060\u2066-\u2069\uFEFF]/u.test(s)&&!/^(?:[=+\-@]|javascript:|data:)/i.test(s.trim());
 const small=(s,n)=>safe(s)&&s.length<=n;
 const score=s=>/^\d{1,2}$/.test(s)&&Number(s)<=20;
 const key=s=>/^20\d{2}-\d{2}-\d{2}-[a-z0-9]+(?:-[a-z0-9]+)*$/.test(s)&&s.length<=80;
@@ -59,15 +60,14 @@ function unique(rows,makeKey){
 }
 function fixture(row){
  if(!key(row.match_id)||!dateOK(row.date)||!/^([01]\d|2[0-3]):[0-5]\d$/.test(row.start_time)||!small(row.opponent,80)||!row.opponent.trim()||!small(row.venue_name,100)||!row.venue_name.trim()||!small(row.address,180)||!row.address.trim()||!small(row.reason,240)||!stampOK(row.last_updated)||!['scheduled','postponed','canceled'].includes(row.status)||!['Home','Away'].includes(row.home_away)||!['tentative','confirmed'].includes(row.time_status)||!['tentative','confirmed'].includes(row.location_status)||(row.match_type&&!['district','non-district'].includes(row.match_type))||row.new_date&&!dateOK(row.new_date))return null;
- if(row.match_id!==row.match_id.slice(0,10)+'-'+slug(row.opponent))return null;
  const base={matchId:row.match_id,opponent:row.opponent,venue:row.home_away,date:row.date,time:row.start_time,timeZone:'America/Chicago',timeStatus:row.time_status,locationStatus:row.location_status,matchType:row.match_type|| (districtIds.has(row.match_id)?'district':'non-district'),venueName:row.venue_name,address:row.address,status:row.status};
  if(row.new_date)base.rescheduledDate=row.new_date;
  if(row.reason)base.statusReason=row.reason;
  if(row.last_updated)base.lastModified=row.last_updated;
- try{return validateFixture({...base,team:'boys'}),base;}catch{return null;}
+ try{return validateFixture({...base,team:'boys'}),startUTC(base),base;}catch{return null;}
 }
 function result(row,fixtureIDs){
- if(!key(row.match_id)||!fixtureIDs.has(row.match_id)||!['boys','girls'].includes(row.team)||row.status!=='final'||!score(row.northwest_score)||!score(row.opponent_score)||row.northwest_score===row.opponent_score||!['TRUE','FALSE',''].includes(row.approved)||!['TRUE','FALSE',''].includes(row.recap_approved)||!small(row.recap_text,3000)||!stampOK(row.last_updated))return null;
+ if(!key(row.match_id)||!fixtureIDs.has(row.match_id)||!['boys','girls'].includes(row.team)||row.status!=='final'||!score(row.northwest_score)||!score(row.opponent_score)||Number(row.northwest_score)===Number(row.opponent_score)||!['TRUE','FALSE',''].includes(row.approved)||!['TRUE','FALSE',''].includes(row.recap_approved)||!small(row.recap_text,3000)||!stampOK(row.last_updated))return null;
  return row;
 }
 function line(row,fixtureIDs){

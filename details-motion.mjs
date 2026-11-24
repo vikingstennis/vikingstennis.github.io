@@ -3,6 +3,9 @@
 const states=new WeakMap();
 const enter={duration:210,easing:'cubic-bezier(0.22,1,0.36,1)'};
 const exit={duration:150,easing:'cubic-bezier(0.4,0,0.2,1)'};
+const touchEnter={duration:240,easing:'cubic-bezier(0.25,0.65,0.35,1)'};
+const touchExit={duration:180,easing:'cubic-bezier(0.4,0,0.2,1)'};
+const timing=want=>matchMedia('(pointer: coarse)').matches?(want?touchEnter:touchExit):(want?enter:exit);
 const supportsMotion=()=>typeof Element.prototype.animate==='function';
 const reduced=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
 const stateFor=details=>{let state=states.get(details);if(!state){state={targetOpen:details.open,animation:null};states.set(details,state);}return state;};
@@ -24,7 +27,7 @@ function animateCard(details,want){
  panel.style.height=`${from}px`;panel.style.opacity=String(fromOpacity);panel.style.overflow='hidden';
  details.classList.toggle('is-expanded',want);state.targetOpen=want;
  if(reduced()){finishInstant(details,want);return;}
- const animation=panel.animate([{height:`${from}px`,opacity:fromOpacity},{height:`${want?full:0}px`,opacity:want?1:0}],{...(want?enter:exit),fill:'forwards'});
+ const animation=panel.animate([{height:`${from}px`,opacity:fromOpacity},{height:`${want?full:0}px`,opacity:want?1:0}],{...timing(want),fill:'forwards'});
  state.animation=animation;
  animation.onfinish=()=>{if(state.animation!==animation)return;state.animation=null;if(!want)details.open=false;for(const property of ['height','opacity','overflow'])panel.style.removeProperty(property);};
 }
@@ -38,12 +41,13 @@ function animateMenu(details,want){
  details.classList.toggle('is-expanded',want);state.targetOpen=want;
  menu.style.visibility='visible';menu.style.pointerEvents=want?'auto':'none';
  if(reduced()){finishInstant(details,want);return;}
- const animation=menu.animate([{opacity:fromOpacity,transform:fromTransform},{opacity:want?1:0,transform:want?'none':'translateY(-4px) scale(0.96)'}],{...(want?enter:exit),fill:'forwards'});
+ const animation=menu.animate([{opacity:fromOpacity,transform:fromTransform},{opacity:want?1:0,transform:want?'none':'translateY(-4px) scale(0.96)'}],{...timing(want),fill:'forwards'});
  state.animation=animation;
  animation.onfinish=()=>{if(state.animation!==animation)return;state.animation=null;if(!want)details.open=false;for(const property of ['visibility','pointer-events','opacity','transform'])menu.style.removeProperty(property);};
 }
 
 function setExpanded(details,want){
+ if(details.classList.contains('season-calendar')){details.open=want;return;}
  if(!supportsMotion()){details.open=want;return;}
  const state=stateFor(details);
  if(state.targetOpen===want&&(state.animation||details.open===want))return;
@@ -54,13 +58,18 @@ function setExpanded(details,want){
 }
 
 export function initDetailsMotion(){
+ const motionPreference=matchMedia('(prefers-reduced-motion: reduce)');
+ motionPreference.addEventListener('change',()=>{
+  if(!motionPreference.matches)return;
+  for(const details of document.querySelectorAll('.js-disclosure'))finishInstant(details,stateFor(details).targetOpen);
+ });
  document.addEventListener('click',event=>{
   const summary=event.target instanceof Element?event.target.closest('summary'):null;
   const details=summary?.parentElement;
   const valid=details instanceof HTMLDetailsElement&&summary===details.querySelector(':scope > summary')&&(details.classList.contains('match-card')||details.classList.contains('calendar-disclosure'));
   if(valid){
    if(details.classList.contains('calendar-disclosure'))for(const other of document.querySelectorAll('.calendar-disclosure[open]'))if(other!==details)setExpanded(other,false);
-   if(supportsMotion()){event.preventDefault();const state=stateFor(details);setExpanded(details,!state.targetOpen);}
+   if(supportsMotion()&&!details.classList.contains('season-calendar')){event.preventDefault();const state=stateFor(details);setExpanded(details,!state.targetOpen);}
   }
   for(const menu of document.querySelectorAll('.calendar-disclosure[open]'))if(!menu.contains(event.target))setExpanded(menu,false);
  });

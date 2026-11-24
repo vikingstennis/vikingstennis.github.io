@@ -22,7 +22,7 @@
 .hero .eyebrow{text-shadow:0 2px 8px #092b20,0 1px 2px #092b20}
 .player-info>span{color:#52624e}
 
-/* Hayden hero crop: keep his face and racket in view across widths. */
+/* Hero crop: keep his face and racket in view across widths. */
 .hero-photo{background:#092b20!important}
 .hero-photo img{object-fit:cover;object-position:55% 45%}
 @media(max-width:700px){.hero-photo img{object-position:52% 30%}}
@@ -283,7 +283,6 @@ section[id]{scroll-margin-top:104px}
 header.is-compact{height:96px}
 header.is-compact .brand,header.is-compact nav,header.is-compact .menu{transform:scale(.88);transform-origin:center}
 @media(max-width:700px){header.is-compact{height:96px}header.is-compact nav{top:96px}}
-@media(prefers-reduced-motion:reduce){header.is-compact .brand,header.is-compact nav,header.is-compact .menu{transform:none}}
 /* Footer marks use equal visual height and centered hit areas. */
 .footer-links .footer-mark-row{gap:12px}
 .footer-links .footer-mark-row a{width:76px;min-width:76px;flex-basis:76px;height:68px;min-height:68px;padding:0;display:flex;align-items:center;justify-content:center}
@@ -341,7 +340,8 @@ header .menu{min-width:44px;min-height:44px;justify-content:center}
 .js-disclosure.match-card.is-expanded .match-panel{height:auto;opacity:1;overflow:visible}
 .js-disclosure.match-card .match-expand-icon svg{transform:none}
 .js-disclosure.match-card.is-expanded .match-expand-icon svg{transform:rotate(180deg)}
-.js-disclosure.calendar-disclosure .calendar-options,.js-disclosure.calendar-disclosure[open] .calendar-options{display:block!important;opacity:0;transform:translateY(-4px) scale(.96);visibility:hidden;pointer-events:none;transition:none!important}
+.js-disclosure.calendar-disclosure:not([open]) .calendar-options{display:none!important;opacity:0;visibility:hidden;pointer-events:none;transition:none!important}
+.js-disclosure.calendar-disclosure[open] .calendar-options{display:block!important;opacity:0;transform:translateY(-4px) scale(.96);visibility:hidden;pointer-events:none;transition:none!important}
 .js-disclosure.calendar-disclosure.is-expanded .calendar-options{opacity:1;transform:none;visibility:visible;pointer-events:auto}
 .js-disclosure.calendar-disclosure .calendar-caret{transform:none}
 .js-disclosure.calendar-disclosure.is-expanded .calendar-caret{transform:rotate(180deg)}
@@ -358,9 +358,26 @@ header .menu{min-width:44px;min-height:44px;justify-content:center}
 .season-calendar>summary:active{transform:scale(.97)}
 .season-calendar>summary:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 .season-calendar .calendar-options{position:absolute;z-index:30;top:calc(100% + 8px);left:0;right:auto;min-width:230px;padding:8px;border-radius:16px;background:var(--cream);box-shadow:0 10px 28px #092a2033}
+.season-calendar .calendar-options,.season-calendar[open] .calendar-options{opacity:1;transform:none;transition:none}
 .season-calendar .calendar-options a,.season-calendar .calendar-options button{display:flex;align-items:center;width:100%;min-height:44px;padding:8px 12px;border:0;border-radius:8px;background:transparent;color:var(--green);text-align:left;text-decoration:none;font:600 14px var(--body);cursor:pointer}
 .season-calendar .calendar-options a:hover,.season-calendar .calendar-options button:hover{background:#e6e8dc}
 .season-calendar .calendar-options a:focus-visible,.season-calendar .calendar-options button:focus-visible{outline:3px solid var(--gold);outline-offset:1px}
 @media(max-width:700px){.schedule-head{gap:var(--space-2)}.season-calendar .calendar-options{left:0;right:auto}}
 @media(max-width:700px){.schedule .section-heading{margin-bottom:var(--space-4)}.schedule .section-heading>div:last-child:not(:first-child){margin-top:var(--space-4)}}
 @media(prefers-reduced-motion:reduce){.season-calendar>summary{transition:none!important}}
+
+/* Keep moving ticker copy clear of the fixed Pause control on narrow screens. */
+@media(max-width:430px){.ticker::after{content:"";position:absolute;z-index:1;inset:0 0 0 auto;width:78px;background:var(--gold);pointer-events:none}.ticker #ticker-pause{z-index:2}}
+
+/* Keep the schedule intro on the site's four-pixel spacing scale. */
+.schedule .section-heading{margin-bottom:var(--space-4)}
+.schedule-shared-label{margin-top:var(--space-2)}
+.schedule-head{gap:var(--space-2);padding-bottom:var(--space-4)}
+.season-downloads{gap:var(--space-2)}
+
+/* Hover treatments apply only when a fine hover pointer is available. */
+@media(hover:none), (pointer:coarse){
+ .footer-links .footer-mark-row a:hover>img,.footer-links .footer-mark-row a:hover .footer-instagram-crop{transform:none}
+ .season-calendar>summary:hover{background:var(--green)}
+ .season-calendar .calendar-options a:hover,.season-calendar .calendar-options button:hover{background:transparent}
+}
