@@ -4,6 +4,7 @@ import { players } from './players.mjs';
 import { nextMatch, sharedMatchLabel, matchDetails, tickerMarkup, escapeHTML as e, scheduleOrder } from './model.mjs';
 import {nextMarkup,rowMarkup} from './match-markup.mjs';
 import {initScrollEffects} from './scroll-effects.mjs';
+import {initTickerMotion} from './ticker-motion.mjs';
 import {initDetailsMotion} from './details-motion.mjs';
 import {SHEET_CSV_URLS} from './sheet-config.mjs';
 import {configuredURLs,loadSheetMatches} from './sheet-data.mjs';
@@ -28,6 +29,7 @@ function render({updateRoster=true}={}){
  const rows=scheduleOrder(data.matches.filter(m=>m.team===(shared?'boys':scheduleTeam)));
  document.querySelector('#match-list').innerHTML=rows.map(rowMarkup).join('');
  document.querySelector('.ticker-track').innerHTML=tickerMarkup(data.matches);
+ document.querySelector('.ticker-announcement').textContent=[...document.querySelectorAll('.ticker-group:first-child span')].map(item=>item.textContent).join(' · ');
  document.querySelector('#team-name').textContent=rosterTeam==='boys'?'Vikings':'Lady Vikings';
  if(updateRoster)document.querySelector('#player-list').innerHTML=players.filter(p=>p.team===rosterTeam).map(p=>`<article class="player-card reveal"><div class="player-photo"><span class="player-placeholder" aria-hidden="true">${p.initials}</span>${p.image?`<picture><source srcset="${e(p.image.replace(/\.jpg$/,'.webp'))}" type="image/webp"><img class="athlete-image" src="${e(p.image)}" width="${p.width??1200}" height="${p.height??800}" loading="lazy" alt="${e(p.name)} playing tennis" style="object-position:${e(p.focus)}"></picture>`:''}<span class="pill">${p.captain?'TEAM CAPTAIN':'VARSITY'}</span></div><div class="player-info"><div><h3>${e(p.name.toUpperCase())}</h3><p>${rosterTeam==='boys'?'BOYS TENNIS':'GIRLS TENNIS'}</p></div></div></article>`).join('');
  const appleOnly=calendarPlatform(navigator.userAgent,navigator.userAgentData?.platform??navigator.platform??'')==='google';
@@ -45,7 +47,7 @@ document.addEventListener('click',event=>{const button=event.target instanceof E
 document.querySelector('#copy-calendar-url').addEventListener('click',async event=>{try{await navigator.clipboard.writeText(SEASON_FEED);event.currentTarget.textContent='Link copied';}catch{event.currentTarget.textContent=SEASON_FEED;}});
 const menu=document.querySelector('#menu'),nav=document.querySelector('#nav');menu.addEventListener('click',()=>{const open=menu.getAttribute('aria-expanded')!=='true';menu.setAttribute('aria-expanded',open);nav.classList.toggle('open',open)});nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');menu.setAttribute('aria-expanded','false')}));
 document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',event=>{if(event.target===d){const r=d.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)d.close();}}));
-const ticker=document.querySelector('.ticker');document.querySelector('#ticker-pause').addEventListener('click',event=>{const paused=ticker.classList.toggle('is-paused');event.currentTarget.setAttribute('aria-pressed',paused);event.currentTarget.textContent=paused?'Play':'Pause';event.currentTarget.setAttribute('aria-label',paused?'Play moving banner':'Pause moving banner');});
+initTickerMotion(document.querySelector('.ticker'));
 document.addEventListener('toggle',event=>{const card=event.target;if(!(card instanceof HTMLDetailsElement)||!card.classList.contains('match-card')||!card.open||matchMedia('(prefers-reduced-motion: reduce)').matches)return;for(const score of card.querySelectorAll('.score-number[data-score]')){const end=Number(score.dataset.score);if(!Number.isInteger(end))continue;score.textContent='0';const start=performance.now();function tick(now){if(!card.open)return;const fraction=Math.min(1,(now-start)/500);score.textContent=String(Math.round(end*(1-Math.pow(1-fraction,3))));if(fraction<1)requestAnimationFrame(tick)}requestAnimationFrame(tick)}},true);
 
 render();
